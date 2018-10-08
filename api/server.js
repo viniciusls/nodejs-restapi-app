@@ -10,3 +10,65 @@ app.use(bodyParser.json());
 app.listen(3000, () => {
     console.log('Server is running');
 });
+
+const db = new mongodb.Db(
+    'instagram',
+    new mongodb.Server('localhost', 27017, {}),
+    {}
+);
+
+app.get('/', (req, res) => {
+    res.send({ msg: 'Olá!' })
+});
+
+app.get('/api/:id', (req, res) => {
+    db.open((error, mongoclient) => {
+        mongoclient.collection('posts', (error, collection) => {
+            collection.find(req.params.id).toArray((err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);   
+                }
+            });
+        });
+    })
+});
+
+app.get('/api', (req, res) => {
+    db.open((error, mongoclient) => {
+        mongoclient.collection('posts', (error, collection) => {
+            collection.find().toArray((err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);   
+                }
+            });
+        });
+    })
+});
+
+app.post('/api', (req, res) => {
+    const data = req.body;
+
+    db.open((error, mongoclient) => {
+        mongoclient.collection('posts', (error, collection) => {
+            collection.insert(data, (err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);   
+                }
+            });
+        });
+    })
+});
+
+app.put('/api', (req, res) => {
+    
+});
+
+app.delete('/api', (req, res) => {
+    
+});
