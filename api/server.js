@@ -63,7 +63,7 @@ app.post('/api', (req, res) => {
                 }
             });
         });
-    })
+    });
 });
 
 app.put('/api/:id', (req, res) => {
@@ -86,6 +86,16 @@ app.put('/api/:id', (req, res) => {
     })
 });
 
-app.delete('/api', (req, res) => {
-    
+app.delete('/api/:id', (req, res) => {
+    db.open((error, mongoclient) => {
+        mongoclient.collection('posts', (error, collection) => {
+            collection.remove({ _id: objectId(req.params.id) }, (err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);   
+                }
+            });
+        });
+    })
 });
