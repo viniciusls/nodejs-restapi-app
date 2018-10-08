@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
+const objectId = require('mongodb').ObjectId;
 
 const app = express();
 
@@ -18,13 +19,13 @@ const db = new mongodb.Db(
 );
 
 app.get('/', (req, res) => {
-    res.send({ msg: 'Olá!' })
+    res.send({ msg: 'Hello world!' })
 });
 
 app.get('/api/:id', (req, res) => {
     db.open((error, mongoclient) => {
         mongoclient.collection('posts', (error, collection) => {
-            collection.find(req.params.id).toArray((err, result) => {
+            collection.find(objectId(req.params.id)).toArray((err, result) => {
                 if (err) {
                     res.json(err);
                 } else {
