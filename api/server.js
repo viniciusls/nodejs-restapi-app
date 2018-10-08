@@ -66,8 +66,24 @@ app.post('/api', (req, res) => {
     })
 });
 
-app.put('/api', (req, res) => {
-    
+app.put('/api/:id', (req, res) => {
+    const data = req.body;
+
+    db.open((error, mongoclient) => {
+        mongoclient.collection('posts', (error, collection) => {
+            collection.update(
+                { _id: objectId(req.params.id) },
+                { $set: { title: data.title } },
+                {},
+                (err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);   
+                }
+            });
+        });
+    })
 });
 
 app.delete('/api', (req, res) => {
